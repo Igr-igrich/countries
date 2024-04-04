@@ -1,0 +1,103 @@
+<input 
+  type="text"
+  placeholder="Filter countries"
+  #filter
+>
+<button 
+  type="button"
+  (click)="filterResults(filter.value)"
+>
+  Search
+</button>
+<table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+       class="mat-elevation-z8">
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="wikiDataId" *ngIf="(router.url == '/countries'); else country">
+    <th class="table__header" mat-header-cell *matHeaderCellDef>
+        ID страны
+        <!-- {{router.url == '/countries' ? 'ID страны' : 'Страна'}} -->
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.wikiDataId}} </td>
+  </ng-container>
+
+  <ng-template #country>
+    <ng-container matColumnDef="country">
+        <th class="table__header" mat-header-cell *matHeaderCellDef>
+            Страна
+        </th>
+        <td mat-cell *matCellDef="let element"> {{element.country}} </td>
+    </ng-container>
+  </ng-template>
+  
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name" *ngIf="(router.url == '/countries'); else city">
+    <th class="table__header" mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+      Наименование
+    </th>
+    <td mat-cell *matCellDef="let element"> 
+        {{element.name}} 
+        <a (click)="navigate(element.wikiDataId)">link</a>
+    </td>
+  </ng-container>
+
+  <ng-template #city>
+    <ng-container matColumnDef="name">
+        <th class="table__header" mat-header-cell *matHeaderCellDef>
+            Наименование
+            <!-- {{router.url == '/countries' ? 'ID страны' : 'Страна'}} -->
+        </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+  </ng-template>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="code" *ngIf="(router.url == '/countries'); else region">
+    <th class="table__header" mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by code">
+        Код страны
+        {{router.url == '/countries' ? 'Код страны' : 'Регион'}}
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+  </ng-container>
+
+  <ng-template #region>
+    <ng-container matColumnDef="region">
+        <th class="table__header" mat-header-cell *matHeaderCellDef>
+            Регион
+            <!-- {{router.url == '/countries' ? 'ID страны' : 'Страна'}} -->
+        </th>
+        <td mat-cell *matCellDef="let element"> {{element.region}} </td>
+    </ng-container>
+  </ng-template>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="currencyCodes" *ngIf="(router.url == '/countries'); else latitude">
+    <th class="table__header" mat-header-cell *matHeaderCellDef>
+        {{router.url == '/countries' ? 'Коды валют' : 'Население'}}
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.currencyCodes}} </td>
+  </ng-container>
+
+  <ng-template #latitude>
+    <ng-container matColumnDef="latitude">
+        <th class="table__header" mat-header-cell *matHeaderCellDef>
+            Население
+            <!-- {{router.url == '/countries' ? 'ID страны' : 'Страна'}} -->
+        </th>
+        <td mat-cell *matCellDef="let element"> {{element.latitude}} </td>
+    </ng-container>
+  </ng-template>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<mat-paginator 
+  [length]="length"
+  [pageIndex]="pageIndex"
+  [pageSize]="5"
+  [pageSizeOptions]="[5, 10]"
+  (page)="pageEvent = getServerData($event)"
+  aria-label="Select page">
+</mat-paginator>
